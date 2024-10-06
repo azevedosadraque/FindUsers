@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { GitUserService } from '../services/git-user.service';
 import { catchError, exhaustMap, map, of } from 'rxjs';
-import { gitHubTypeAction } from './github.type-action.enum';
-import * as fromGitHubActions from './github.actions'
+import { userGitHubTypeAction } from './user-git-hub.type-action.enum';
+import * as fromGitHubActions from './user-git-hub.actions'
 
 @Injectable()
-export class UserEffects {
+export class UserGitHubEffects {
 
   constructor(private actions$: Actions, private githubService: GitUserService) {}
 
   loadUserRepos$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(gitHubTypeAction.LOAD_USER_REPOS),
+      ofType(userGitHubTypeAction.LOAD_USER_REPOS),
       exhaustMap((data: any) => {
         return this.githubService.getUserRepos(data.payload)
         .pipe(

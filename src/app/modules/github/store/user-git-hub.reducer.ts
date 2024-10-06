@@ -1,20 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
-import { loadUserRepos, loadUserReposSuccess, loadUserReposNotFound } from './github.actions';
+import { loadUserReposSuccess, loadUserReposNotFound } from './user-git-hub.actions';
 
-export interface UserState {
+export interface UserGitHubState {
   repos: any[];
-  loading: boolean;
   error: string | null;
 }
 
-export const initialState: UserState = {
+export const initialState: UserGitHubState = {
   repos: [],
-  loading: false, 
 
   error: null,
 };
 
-export const userReducer = createReducer(
+export const userGitHubReducer = createReducer(
   initialState,
   on(loadUserReposSuccess, (state, { payload }) => ({ ...state, payload })),
   on(loadUserReposNotFound, (state, { payload }) => ({ ...state, payload }))
