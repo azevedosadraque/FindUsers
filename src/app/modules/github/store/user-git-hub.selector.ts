@@ -12,3 +12,8 @@ export const getUserGitHubError = createSelector(
     getUserGitHubFeatureState,
     (state: UserGitHubState) => state.error
 )
+
+export const getUserGitHubLoading = createSelector(
+    getUserGitHubFeatureState,
+    (state: UserGitHubState) => state.loading
+)

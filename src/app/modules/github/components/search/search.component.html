@@ -1,1 +1,13 @@
-<p>search works!</p>
+<div class="search-container">
+    <input 
+      type="text" 
+      [(ngModel)]="username" 
+      (keyup.enter)="searchUser()" 
+      placeholder="Enter GitHub username" 
+    />
+    <button (click)="searchUser()">Search</button>
+  
+    <!-- Exibe uma mensagem de erro se a validação falhar -->
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+  

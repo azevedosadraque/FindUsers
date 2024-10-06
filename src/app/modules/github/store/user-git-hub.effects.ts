@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { GitUserService } from '../services/git-user.service';
-import { catchError, exhaustMap, map, of } from 'rxjs';
+import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { userGitHubTypeAction } from './user-git-hub.type-action.enum';
 import * as fromGitHubActions from './user-git-hub.actions'
 
@@ -25,5 +25,17 @@ export class UserGitHubEffects {
         )
       })
     )
+  );
+
+  storeUserRepos$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(userGitHubTypeAction.LOAD_USER_REPOS_RESPONSE_SUCCESS),
+      tap(({ username, repos }) => {
+        const cachedUsers = JSON.parse(localStorage.getItem('cachedUsers') || '{}');
+        cachedUsers[username] = repos;
+        localStorage.setItem('cachedUsers', JSON.stringify(cachedUsers));
+      })
+    ),
+    { dispatch: false }
   );
 }

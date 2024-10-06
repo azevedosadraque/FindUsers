@@ -3,17 +3,19 @@ import { loadUserReposSuccess, loadUserReposNotFound } from './user-git-hub.acti
 
 export interface UserGitHubState {
   repos: any[];
+  loading: boolean;
   error: string | null;
 }
 
 export const initialState: UserGitHubState = {
   repos: [],
+  loading: false,
 
   error: null,
 };
 
 export const userGitHubReducer = createReducer(
   initialState,
-  on(loadUserReposSuccess, (state, { payload }) => ({ ...state, payload })),
-  on(loadUserReposNotFound, (state, { payload }) => ({ ...state, payload }))
+  on(loadUserReposSuccess, (state, { payload }) => ({ ...state, payload, loading: false  })),
+  on(loadUserReposNotFound, (state, { payload }) => ({ ...state, loading: false, payload }))
 );
