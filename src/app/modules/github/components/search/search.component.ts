@@ -17,6 +17,7 @@ export class SearchComponent {
   constructor(private router: Router) {}
 
   searchUser() {
+    console.log("searchUser")
     if (this.username.trim() === '') {
       this.errorMessage = 'Please enter a valid GitHub username.';
     } else {

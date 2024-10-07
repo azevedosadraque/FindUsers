@@ -1,5 +1,5 @@
 export type ApiResponseModel<TDataResponseType = any> = {
-    data: TDataResponseType[]
+    data: TDataResponseType[];
     success: boolean;
     errors: string[];
 }

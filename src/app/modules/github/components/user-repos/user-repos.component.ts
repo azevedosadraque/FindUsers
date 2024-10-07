@@ -36,7 +36,9 @@ export class UserReposComponent implements OnInit {
   ngOnInit() {
     const username = this.route.snapshot.paramMap.get('username');
   
+    console.log(username)
     if (username) {
+      console.log(username)
       if (navigator.onLine) {
         this.store.dispatch(loadUserRepos({ payload: username }));
       } else {

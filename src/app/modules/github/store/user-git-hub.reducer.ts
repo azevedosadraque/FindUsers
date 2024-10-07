@@ -16,6 +16,6 @@ export const initialState: UserGitHubState = {
 
 export const userGitHubReducer = createReducer(
   initialState,
-  on(loadUserReposSuccess, (state, { payload }) => ({ ...state, payload, loading: false  })),
-  on(loadUserReposNotFound, (state, { payload }) => ({ ...state, loading: false, payload }))
+  on(loadUserReposSuccess, (state) => ({ ...state, loading: true  })),
+  on(loadUserReposNotFound, (state) => ({ ...state, loading: false }))
 );

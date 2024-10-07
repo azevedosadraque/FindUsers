@@ -6,8 +6,12 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'FindUsers';
+
+  constructor() {
+    console.log('AppComponent initialized');  // Verificar se o componente está sendo inicializado
+  }
 }

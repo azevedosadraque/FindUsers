@@ -14,7 +14,6 @@ export class GitUserService {
   ) {}
 
   getUserRepos(username: string): Observable<ApiResponseModel<GitHubUserModel>> {
-    const url = "";
-    return this.gitHubApiService.get<GitHubUserModel>()
+    return this.gitHubApiService.get<GitHubUserModel>();
   }
 }

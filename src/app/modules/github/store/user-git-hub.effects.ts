@@ -1,41 +1,39 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, exhaustMap, map, tap } from 'rxjs/operators';
 import { GitUserService } from '../services/git-user.service';
-import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { userGitHubTypeAction } from './user-git-hub.type-action.enum';
-import * as fromGitHubActions from './user-git-hub.actions'
+import { loadUserReposNotFound, loadUserReposSuccess } from './user-git-hub.actions';
 
-@Injectable()
-export class UserGitHubEffects {
 
-  constructor(private actions$: Actions, private githubService: GitUserService) {}
-
-  loadUserRepos$ = createEffect(() =>
-    this.actions$.pipe(
+export const getUsers$ = createEffect(
+  (actions$: Actions = inject(Actions), gitUserService: GitUserService = inject(GitUserService)) => {
+    return actions$.pipe(
       ofType(userGitHubTypeAction.LOAD_USER_REPOS),
-      exhaustMap((data: any) => {
-        return this.githubService.getUserRepos(data.payload)
-        .pipe(
-          map(payload => (
-            fromGitHubActions.loadUserReposSuccess({payload: payload.data})
-          )),
-          catchError(error =>{
-            return of(fromGitHubActions.loadUserReposNotFound({ payload: error}))
-          })
+      exhaustMap((data: any) =>
+        gitUserService.getUserRepos(data.payload).pipe(
+          map(data => loadUserReposSuccess({ payload: data })),
+          catchError(error => [loadUserReposNotFound(error)])
         )
-      })
-    )
-  );
+      )
+    );
+  },
+  { functional: true }
+);
 
-  storeUserRepos$ = createEffect(() =>
-    this.actions$.pipe(
+export const storeUserRepos$ = createEffect(
+  (
+    actions$: Actions = inject(Actions)
+  ) => {
+    return actions$.pipe(
       ofType(userGitHubTypeAction.LOAD_USER_REPOS_RESPONSE_SUCCESS),
       tap(({ username, repos }) => {
         const cachedUsers = JSON.parse(localStorage.getItem('cachedUsers') || '{}');
         cachedUsers[username] = repos;
         localStorage.setItem('cachedUsers', JSON.stringify(cachedUsers));
       })
-    ),
-    { dispatch: false }
-  );
-}
+    );
+  },
+  { dispatch: false, functional: true }
+);
+

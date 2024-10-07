@@ -4,7 +4,9 @@ import { ApiResponseModel } from "../../models/api-response.model";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class GitHubApiService {
     apiBaseUrl = '';
 
@@ -12,7 +14,7 @@ export class GitHubApiService {
         private readonly http: HttpClient
     )
     {
-
+        console.log('GitHubApiService initialized');
     }
 
     handleApiError(error: any | null, message: string | string[] | null = null): void {
@@ -45,13 +47,14 @@ export class GitHubApiService {
 
     get<TDataResponseType>(): Observable<ApiResponseModel<TDataResponseType>>
     {
+        console.log("get");
         return this.http
             .get<ApiResponseModel<TDataResponseType>>("url")
             .pipe(
                 catchError((error) => {
                     return throwError(() => new Error(error));
                 })
-            )
+            );
     }
 
     private showFeedback(message: string | string[]): void {
