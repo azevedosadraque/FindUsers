@@ -1,10 +1,16 @@
-export type GitHubUserModel = {
+export interface UserModel {
     name: string;
     login: string;
-    description: string;
+    bio: string;
     followers: number;
     following: number;
-    stars: number;
     location: string;
-    profileImage: string;
-  };
+    avatar_url: string;
+}
+
+export interface RepositoryModel {
+    name: string;
+    stargazers_count: number;
+    html_url: string;
+    description: string;
+}

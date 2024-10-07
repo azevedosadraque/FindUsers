@@ -9,6 +9,7 @@ import { provideEffects } from '@ngrx/effects';
 import * as e from './app/modules/github/store/user-git-hub.effects';
 import { GitHubApiService } from './app/shared/services/github-api/github-api.service';
 import { GitUserService } from './app/modules/github/services/git-user.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 console.log('Bootstrapping application...');  // Adicione este log
 
@@ -19,7 +20,7 @@ bootstrapApplication(AppComponent, {
     provideStore({ user: userGitHubReducer }),
     provideEffects(e),
     GitHubApiService,
-    GitUserService,
+    GitUserService, provideAnimationsAsync(),
   ]
 })
 .then(() => console.log('Application bootstrapped successfully'))

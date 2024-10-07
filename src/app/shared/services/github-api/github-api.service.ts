@@ -1,67 +1,64 @@
-import { HttpClient, HttpStatusCode } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ApiResponseModel } from "../../models/api-response.model";
 import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
+import { RepositoryModel, UserModel } from "../../models/gihthub/github.model";
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 export class GitHubApiService {
-    apiBaseUrl = '';
+  private apiBaseUrl = 'https://api.github.com/users';
 
-    constructor(
-        private readonly http: HttpClient
-    )
-    {
-        console.log('GitHubApiService initialized');
+  constructor(private readonly http: HttpClient) {
+    console.log('GitHubApiService initialized');
+  }
+
+  getUser(username: string): Observable<UserModel> {
+    const url = `${this.apiBaseUrl}/${username}`;
+    return this.http.get<UserModel>(url)
+      .pipe(
+        catchError(this.handleApiError)
+      );
+  }
+
+  getUserRepos(username: string): Observable<RepositoryModel[]> {
+    const url = `${this.apiBaseUrl}/${username}/repos`;
+    return this.http.get<RepositoryModel[]>(url)
+      .pipe(
+        catchError(this.handleApiError)
+      );
+  }
+
+  filterRepositories(
+    repos: RepositoryModel[], 
+    filterBy: { stars?: 'asc' | 'desc', name?: 'asc' | 'desc' }
+  ): RepositoryModel[] {
+    let filteredRepos = [...repos];
+
+    if (filterBy.stars) {
+      filteredRepos = filteredRepos.sort((a, b) => 
+        filterBy.stars === 'asc' ? a.stargazers_count - b.stargazers_count : b.stargazers_count - a.stargazers_count
+      );
     }
 
-    handleApiError(error: any | null, message: string | string[] | null = null): void {
-        const actions: Record<string, () => void> = {
-            noErrorWithMessage: () => this.showFeedback(message!),
-            apiErrorWithDetails: () => {
-                const apiResponse = <ApiResponseModel>error.error;
-                this.showFeedback(apiResponse.errors);
-            },
-            generalError: () => this.showFeedback(error.message),
-            unauthorizedError: () => {
-                this.showFeedback("Unauthorized access");
-            }
-        };
-    
-        const conditionMap: Record<string, boolean> = {
-            noErrorWithMessage: !error && !!message,
-            apiErrorWithDetails: !!error?.error?.errors,
-            generalError: !!error?.message && error.status !== HttpStatusCode.Unauthorized,
-            unauthorizedError: parseInt(error?.status) === HttpStatusCode.Unauthorized
-        };
-    
-        for (const condition in conditionMap) {
-            if (conditionMap[condition]) {
-                actions[condition]();
-                return;
-            }
-        }
+    if (filterBy.name) {
+      filteredRepos = filteredRepos.sort((a, b) => 
+        filterBy.name === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
+      );
     }
 
-    get<TDataResponseType>(): Observable<ApiResponseModel<TDataResponseType>>
-    {
-        console.log("get");
-        return this.http
-            .get<ApiResponseModel<TDataResponseType>>("url")
-            .pipe(
-                catchError((error) => {
-                    return throwError(() => new Error(error));
-                })
-            );
-    }
+    return filteredRepos;
+  }
 
-    private showFeedback(message: string | string[]): void {
-        if (Array.isArray(message)) {
-            message.forEach(msg => console.log(msg));
-        } else {
-            console.log(message);
-        }
+  private handleApiError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Client error: ${error.error.message}`;
+    } else {
+      errorMessage = `Server error: ${error.status}\nMessage: ${error.message}`;
     }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
 }
