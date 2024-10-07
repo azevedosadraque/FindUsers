@@ -11,6 +11,5 @@ export interface UserModel {
 export interface RepositoryModel {
     name: string;
     stargazers_count: number;
-    html_url: string;
     description: string;
 }

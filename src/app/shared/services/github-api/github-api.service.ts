@@ -21,6 +21,13 @@ export class GitHubApiService {
         catchError(this.handleApiError)
       );
   }
+  
+  getUsers(perPage: number = 30, since: number = 0): Observable<UserModel[]> {
+    const url = `${this.apiBaseUrl}?per_page=${perPage}&since=${since}`;
+    return this.http.get<UserModel[]>(url).pipe(
+      catchError(this.handleApiError)
+    );
+  }
 
   getUserRepos(username: string): Observable<RepositoryModel[]> {
     const url = `${this.apiBaseUrl}/${username}/repos`;
