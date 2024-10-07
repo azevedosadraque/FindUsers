@@ -34,7 +34,7 @@ npm -v
 - Instale as dependências do projeto:
 ```npm install```
 
-###Como Rodar o Projeto
+### Como Rodar o Projeto
 Após a instalação das dependências, você pode iniciar o servidor de desenvolvimento com o seguinte comando:
 ```npm start```
 Isso executará o comando ng serve, que irá compilar o projeto e abrir o aplicativo no navegador padrão. O servidor estará disponível no seguinte endereço: http://localhost:4200
